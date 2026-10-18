@@ -25,7 +25,7 @@ resource "aws_route_table" "private-rt" {
  
     route {
         cidr_block = "0.0.0.0/0"
-        gateway_id = var.nat_gateway_id
+        nat_gateway_id = var.nat_gateway_id
     }
  
     tags = {
@@ -33,7 +33,7 @@ resource "aws_route_table" "private-rt" {
     }
 }
 
-# associating all the public subnets to the private-rt
+# associating all the private subnets to the private-rt
 resource "aws_route_table_association" "private" {
   count          = length(var.private_subnet_ids)
   subnet_id      = var.private_subnet_ids[count.index]

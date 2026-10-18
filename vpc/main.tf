@@ -19,8 +19,10 @@ resource "aws_vpc" "main" {
   }
 }
 
-# creating Elastic IP for NAT-Gateway for pvt-sbnt
+# creating Elastic IP for NAT-Gateway (placed in a public subnet, serves pvt-sbnt egress)
 resource "aws_eip" "eip" {
+  domain = "vpc"
+
   tags = {
     Name = "${var.project}-${var.environment}-eip"
   }
@@ -58,11 +60,14 @@ module "internet-gateway" {
 
 # calling nat-gateway module with passing elaticip
 module "nat-gateway" {
-  source         = "./modules/nat-gateway"
-  private-subnet = module.private-subnet.subnet_id
-  eip_id         = aws_eip.eip.id
-  project        = var.project
-  environment    = var.environment
+  source        = "./modules/nat-gateway"
+  public_subnet = module.public-subnet.subnet_id
+  eip_id        = aws_eip.eip.id
+  project       = var.project
+  environment   = var.environment
+
+  # NAT gateway needs the IGW attached to the VPC first
+  depends_on = [module.internet-gateway]
 }
 
 # calling route-table module
