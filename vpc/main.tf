@@ -14,6 +14,10 @@ provider "aws" {
 resource "aws_vpc" "main" {
   cidr_block = var.vpc_cidr
 
+  # both are required for a private-only EKS endpoint to resolve inside the VPC
+  enable_dns_support   = true
+  enable_dns_hostnames = true
+
   tags = {
     Name = "${var.project}-${var.environment}-vpc"
   }
@@ -72,12 +76,12 @@ module "nat-gateway" {
 
 # calling route-table module
 module "route-table" {
-  source              = "./modules/route-table"
-  vpc_id              = aws_vpc.main.id
-  public_subnet_ids   = module.public-subnet.subnet_id
-  private_subnet_ids  = module.private-subnet.subnet_id
-  igw_id              = module.internet-gateway.igw_id
-  nat_gateway_id      = module.nat-gateway.nat_gateway_id
-  project             = var.project
-  environment         = var.environment
+  source             = "./modules/route-table"
+  vpc_id             = aws_vpc.main.id
+  public_subnet_ids  = module.public-subnet.subnet_id
+  private_subnet_ids = module.private-subnet.subnet_id
+  igw_id             = module.internet-gateway.igw_id
+  nat_gateway_id     = module.nat-gateway.nat_gateway_id
+  project            = var.project
+  environment        = var.environment
 }
