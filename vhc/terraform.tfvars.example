@@ -1,5 +1,8 @@
+# EXAMPLE ONLY. Copy to terraform.tfvars (which is git-ignored) and replace each sentence with the real value.
+# Values written as <sentences> describe what belongs there. The tuning parameters below are plain PostgreSQL settings and are kept as examples.
+
 # =============================================================================
-# prod environment — variable overrides
+# Environment — variable overrides
 # db_master_password is intentionally left empty here.
 # Set it via: export TF_VAR_db_master_password="..."
 #
@@ -7,20 +10,20 @@
 # on 2026-04-22. Update this file whenever a parameter is changed on RDS.
 # =============================================================================
 
-aws_region  = "us-east-1"
-environment = "staging"
-kms_key_id  = "arn:aws:kms:us-east-1:259828991353:key/42908e0a-10e2-438f-9240-ab0e7778e027"
+aws_region  = "<the AWS region the Aurora cluster lives in, for example us-east-1>"
+environment = "<the environment name used in resource names, for example dev, staging or prod>"
+kms_key_id  = "<the full ARN of the KMS key that encrypts the Aurora cluster storage>"
 
 # ── Cluster identifier ─────────────────────────────────────────────────────────
 
-source_cluster_identifier = "aidbox-staging-iac-perf"
+source_cluster_identifier = "<the identifier of the existing Aurora cluster this configuration is modelled on>"
 
 # ── Database ──────────────────────────────────────────────────────────────────
 
-db_name               = "aidbox"
-db_master_username    = "aidbox"
-db_subnet_group_name  = "vhc-staging"
-db_security_group_ids = ["sg-0f33606017a5f1c3c"]
+db_name               = "<the name of the database created inside the cluster>"
+db_master_username    = "<the master user name for the cluster; the password is never stored here and comes from TF_VAR_db_master_password>"
+db_subnet_group_name  = "<the name of the DB subnet group the cluster is placed in>"
+db_security_group_ids = ["<the ID of the security group that allows application access to the database port>"]
 
 # ── PG family ─────────────────────────────────────────────────────────────────
 
@@ -31,7 +34,7 @@ pg_family = "aurora-postgresql15"
 writer_instance_class    = "db.r8g.xlarge"
 reader_id_instance_class = "db.r8g.large"
 
-logical_reader_cluster_identifier = "logical-replication-aidbox-iac-perf"
+logical_reader_cluster_identifier = "<the identifier to give the logical-replication reader cluster>"
 logical_reader_instance_class     = "db.r8g.large"
 
 # ── Shared autovacuum params (source cluster + logical reader) ────────────────
@@ -86,4 +89,4 @@ logical_reader_max_parallel_workers            = "8"        # db.r6gd.2xlarge = 
 
 # ── Networking ────────────────────────────────────────────────────────────────
 
-#vpc_id = "vpc-05c550f6c831ae860"
+#vpc_id = "<the ID of the VPC the database lives in>"

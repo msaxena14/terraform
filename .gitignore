@@ -1,5 +1,14 @@
+# Terraform
+*.tfstate
+*.tfstate.*
+*.tfstate.backup
+.terraform/
+crash.log
 *.tfvars
 !*.tfvars.example
-.terraform/
-*.tfstate**.tfvars
-!*.tfvars.example
+
+# Local / secrets
+.env
+*.pem
+*.key
+.DS_Store
